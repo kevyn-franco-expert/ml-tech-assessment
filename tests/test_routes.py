@@ -139,6 +139,11 @@ class TestAnalyzeEndpoint:
         
         assert response.status_code == 502
 
+    def test_missing_transcript_parameter(self, client):
+        response = client.get("/api/v1/analyze")
+        
+        assert response.status_code == 422
+
 
 class TestGetAnalysisEndpoint:
     @patch('app.infra.di.get_get_analysis_use_case')

@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "transcript-analysis-api",
+		"name": "Transcript Analysis API",
+		"description": "Collection for testing the Transcript Analysis API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check if the API is running"
+			},
+			"response": []
+		},
+		{
+			"name": "Analyze Single Transcript",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyze?transcript={{sample_transcript}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyze"
+					],
+					"query": [
+						{
+							"key": "transcript",
+							"value": "{{sample_transcript}}",
+							"description": "The plain text transcript to analyze"
+						}
+					]
+				},
+				"description": "Analyze a single transcript and get summary with next actions"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Analysis by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyses/{{analysis_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyses",
+						"{{analysis_id}}"
+					]
+				},
+				"description": "Retrieve a previously stored analysis by its ID"
+			},
+			"response": []
+		},
+		{
+			"name": "Batch Analysis",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transcripts\": [\n    \"{{sample_transcript}}\",\n    \"This is a second transcript about project planning and team coordination. We discussed deadlines, resource allocation, and next steps for the upcoming sprint.\",\n    \"Meeting transcript: We reviewed the quarterly results and discussed strategies for improvement. Key action items include updating the documentation and scheduling follow-up meetings.\"\n  ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyses/batch",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyses",
+						"batch"
+					]
+				},
+				"description": "Analyze multiple transcripts concurrently"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Empty Transcript Error",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyze?transcript=",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyze"
+					],
+					"query": [
+						{
+							"key": "transcript",
+							"value": "",
+							"description": "Empty transcript to test validation"
+						}
+					]
+				},
+				"description": "Test error handling for empty transcript (should return 422)"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Large Transcript Error",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyze?transcript={{large_transcript}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyze"
+					],
+					"query": [
+						{
+							"key": "transcript",
+							"value": "{{large_transcript}}",
+							"description": "Very large transcript to test size limit"
+						}
+					]
+				},
+				"description": "Test error handling for transcript too large (should return 413)"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Analysis Not Found",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/v1/analyses/00000000-0000-0000-0000-000000000000",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"analyses",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				},
+				"description": "Test error handling for non-existent analysis ID (should return 404)"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "sample_transcript",
+			"value": "Mark Foster | MCC, ACTC: Hey there, Liam. Glad we could find a few minutes for this one-on-one. How are things going? Liam Garcia: Hey, Mark. Doing well, thanks. It's been a busy week—my local dev environment is a bit cluttered from a new feature branch, but I'm making progress. Ready to dig in on Python best practices? Mark Foster | MCC, ACTC: Absolutely. I know you wanted to focus on a handful of coding guidelines and how they tie into your team's speed. Let's start big picture: what's motivating you to tighten up your Python practices right now?",
+			"type": "string"
+		},
+		{
+			"key": "analysis_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "large_transcript",
+			"value": "This is a very large transcript that exceeds the 100KB limit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. [This would be repeated many times to exceed 100KB]",
+			"type": "string"
+		}
+	]
+}
